@@ -167,7 +167,7 @@
                 </span>
 
                 {{-- KERENTANAN A1: STORED XSS --}}
-                <h3>{!! $item->judul !!}</h3>
+                <h3>{{ $item->judul }}</h3>
 
                 <p class="book-meta">
                     Penulis: {{ $item->penulis }}
@@ -758,7 +758,7 @@
     }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // loadBuku(); 
+    loadBuku(); 
 });
 </script>
 

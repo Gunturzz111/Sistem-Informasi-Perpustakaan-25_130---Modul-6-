@@ -38,15 +38,16 @@ class BukuController extends Controller
 
         return view('buku.show', compact('dataBuku'));
     }
-    // A2: SQL Injection (KODE RENTAN)
+// A2: SQL Injection SUDAH DIPERBAIKI
 public function cariRentan(Request $request)
 {
-    $judul = $request->query('judul');
+    $judul = $request->query('judul', '');
 
-    $hasil = DB::select(
-        "SELECT * FROM bukus WHERE judul = '$judul'"
+    $buku = DB::select(
+        'SELECT * FROM bukus WHERE judul = ?',
+        [$judul]
     );
 
-    return response()->json($hasil);
+    return response()->json($buku);
 }
 }
