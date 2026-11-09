@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -14,41 +13,81 @@ class RolePermissionSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
+        // Daftar permission aplikasi
         $permissions = [
-            'akses dashboard admin', 'akses dashboard petugas', 'lihat daftar buku',
-            'kelola data buku', 'kelola data pengguna', 'kelola role pengguna',
-            'kelola peminjaman', 'kelola pengembalian', 'mengajukan peminjaman buku',
-            'memproses persetujuan peminjaman', 'mencatat pengembalian buku',
-            'melihat status peminjaman sendiri', 'melihat riwayat peminjaman sendiri',
-            'lihat laporan perpustakaan', 'lihat profil sendiri', 'ubah profil sendiri',
+            'akses dashboard admin',
+            'akses dashboard petugas',
+            'lihat daftar buku',
+            'kelola data buku',
+            'kelola data pengguna',
+            'kelola role pengguna',
+            'kelola peminjaman',
+            'kelola pengembalian',
+            'mengajukan peminjaman buku',
+            'memproses persetujuan peminjaman',
+            'mencatat pengembalian buku',
+            'melihat status peminjaman sendiri',
+            'melihat riwayat peminjaman sendiri',
+            'lihat laporan perpustakaan',
+            'lihat profil sendiri',
+            'ubah profil sendiri',
         ];
+
+        // Membuat permission jika belum tersedia
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web',
+            ]);
         }
 
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $petugas = Role::firstOrCreate(['name' => 'petugas', 'guard_name' => 'web']);
-        $siswa = Role::firstOrCreate(['name' => 'siswa', 'guard_name' => 'web']);
+        // Membuat role jika belum tersedia
+        $admin = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => 'web',
+        ]);
 
+        $petugas = Role::firstOrCreate([
+            'name' => 'petugas',
+            'guard_name' => 'web',
+        ]);
+
+        $siswa = Role::firstOrCreate([
+            'name' => 'siswa',
+            'guard_name' => 'web',
+        ]);
+
+        // Hak akses admin
         $admin->syncPermissions($permissions);
+
+        // Hak akses petugas
         $petugas->syncPermissions([
-            'akses dashboard petugas', 'lihat daftar buku', 'kelola data buku',
-            'kelola peminjaman', 'kelola pengembalian', 'mengajukan peminjaman buku',
-            'memproses persetujuan peminjaman', 'mencatat pengembalian buku',
-            'melihat status peminjaman sendiri', 'melihat riwayat peminjaman sendiri',
-            'lihat laporan perpustakaan', 'lihat profil sendiri', 'ubah profil sendiri',
-        ]);
-        $siswa->syncPermissions([
-            'lihat daftar buku', 'mengajukan peminjaman buku',
-            'melihat status peminjaman sendiri', 'melihat riwayat peminjaman sendiri',
-            'lihat profil sendiri', 'ubah profil sendiri',
+            'akses dashboard petugas',
+            'lihat daftar buku',
+            'kelola data buku',
+            'kelola peminjaman',
+            'kelola pengembalian',
+            'mengajukan peminjaman buku',
+            'memproses persetujuan peminjaman',
+            'mencatat pengembalian buku',
+            'melihat status peminjaman sendiri',
+            'melihat riwayat peminjaman sendiri',
+            'lihat laporan perpustakaan',
+            'lihat profil sendiri',
+            'ubah profil sendiri',
         ]);
 
-        // Akun awal admin untuk pengelolaan pertama; ganti password setelah login.
-        $user = User::firstOrCreate(
-            ['email' => 'admin@perpustakaan.test'],
-            ['name' => 'Administrator', 'password' => 'Admin123!']
-        );
-        $user->syncRoles(['admin']);
+        // Hak akses siswa
+        $siswa->syncPermissions([
+            'lihat daftar buku',
+            'mengajukan peminjaman buku',
+            'melihat status peminjaman sendiri',
+            'melihat riwayat peminjaman sendiri',
+            'lihat profil sendiri',
+            'ubah profil sendiri',
+        ]);
+
+        // Bersihkan cache permission
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }
