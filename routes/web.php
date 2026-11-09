@@ -15,6 +15,10 @@ Route::get('/', fn () => view('home'))->name('home');
 Route::get('/buku', [BukuController::class, 'index'])
     ->name('buku.index');
 
+    Route::get('/buku/create', [BukuController::class, 'index'])
+    ->middleware(['auth', 'can:kelola-buku'])
+    ->name('buku.create');
+
 Route::get('/buku/{id}', [BukuController::class, 'show'])
     ->name('buku.show');
 

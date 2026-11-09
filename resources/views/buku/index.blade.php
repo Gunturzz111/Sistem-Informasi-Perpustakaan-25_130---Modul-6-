@@ -34,7 +34,9 @@
                 @can('lihat laporan perpustakaan')<a href="{{ route('laporan.index') }}" class="nav-link">Laporan</a>@endcan
                 @can('lihat profil sendiri')<a href="{{ route('profile.edit') }}" class="nav-link">Profil</a>@endcan
             @endauth
-            @if($canManage)<a href="#form-section" class="nav-link">Tambah Buku</a>@endif
+            @can('kelola-buku')
+                <a href="#form-section" class="nav-link">Tambah Buku</a>
+            @endcan
         </div>
         <div style="display:flex;align-items:center;gap:14px;font-size:13px;font-weight:700">
             @auth<span>{{ auth()->user()->name }}</span><form method="POST" action="{{ route('logout') }}" style="display:inline">@csrf<button type="submit" style="background:#fff">Keluar</button></form>
@@ -51,7 +53,7 @@
     </header>
 
     {{-- FORM TAMBAH DAN UBAH BUKU --}}
-    @if($canManage)
+@can('kelola-buku')
     <section class="panel" id="form-section">
 
         <h2 id="form-title">Tambah Buku</h2>
@@ -129,7 +131,7 @@
             </div>
         </form>
     </section>
-    @endif
+    @endcan
 
     {{-- DAFTAR BUKU --}}
     <section class="panel">
@@ -194,7 +196,11 @@
 
 <script>
     const API_BUKU = '/api/buku';
-    const CAN_MANAGE = @json($canManage);
+@can('kelola-buku')
+    const CAN_MANAGE = true;
+@else
+    const CAN_MANAGE = false;
+@endcan
 
     const daftarBuku = document.getElementById('daftar-buku');
     const listMessage = document.getElementById('list-message');
