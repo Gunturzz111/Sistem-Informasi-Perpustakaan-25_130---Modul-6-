@@ -16,6 +16,6 @@ class PeminjamanPolicy
 
         // Siswa hanya boleh melihat peminjaman miliknya sendiri.
         return $peminjaman->anggota !== null
-            && $peminjaman->anggota->user_id == $user->id;
+            && $peminjaman->anggota->user_id === $user->id;
     }
 }
