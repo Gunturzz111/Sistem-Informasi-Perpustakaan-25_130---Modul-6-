@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
             BukuSeeder::class,
             PeminjamanSeeder::class,
             RolePermissionSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }
+
