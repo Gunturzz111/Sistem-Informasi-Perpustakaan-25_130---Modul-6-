@@ -46,6 +46,9 @@
             "npm install --ignore-scripts",
             "npm run build"
         ],
+        "vercel": [
+            "@php artisan package:discover --ansi"
+        ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
