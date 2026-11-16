@@ -100,4 +100,23 @@ Route::get('/buku-cari', [BukuController::class, 'cariRentan'])
             ->name('users.destroy')
             ->middleware('permission:kelola data pengguna');
     });
+    Route::get('/__diag', function () {
+    $app = app();
+
+    try {
+        $viewClass = get_class($app->make('view'));
+        $viewError = null;
+    } catch (\Throwable $e) {
+        $viewClass = null;
+        $viewError = $e->getMessage();
+    }
+
+    return response()->json([
+        'view_bound' => $app->bound('view'),
+        'view_provider_loaded' =>
+            $app->getProvider(\Illuminate\View\ViewServiceProvider::class) !== null,
+        'view_class' => $viewClass,
+        'view_error' => $viewError,
+    ]);
+});
 });

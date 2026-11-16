@@ -1,0 +1,12 @@
+PATCH PERSIAPAN MODUL VII
+
+Salin file dan folder dalam arsip ini ke root proyek Laravel:
+- .env.example
+- .vercelignore
+- vercel.json
+- api/index.php
+- config/database.php (mengandung opsi PDO::ATTR_EMULATE_PREPARES untuk PostgreSQL)
+
+Jangan menimpa .env lokal Anda. Jangan pernah commit atau mengunggah .env.
+Isi nilai koneksi Supabase pada .env lokal sendiri setelah membuat project Supabase.
+Nilai dalam .env.example hanyalah placeholder, bukan kredensial yang dapat dipakai.
