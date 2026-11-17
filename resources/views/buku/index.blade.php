@@ -247,13 +247,23 @@
     }
 
     function ambilData(result) {
+        // Mendukung array langsung, Laravel Resource Collection,
+        // dan respons yang membungkus pagination di dalam data.data.
         if (Array.isArray(result)) return result;
 
-        if (Array.isArray(result.data)) {
+        if (Array.isArray(result?.data)) {
             return result.data;
         }
 
-        return result;
+        if (Array.isArray(result?.data?.data)) {
+            return result.data.data;
+        }
+
+        if (Array.isArray(result?.books)) {
+            return result.books;
+        }
+
+        return null;
     }
 
     function namaKategori(kategori) {
@@ -388,13 +398,16 @@
 
     // MENAMPILKAN DAFTAR BUKU
     async function loadBuku() {
-        daftarBuku.replaceChildren();
+        // Pertahankan hasil render Blade saat API sedang dimuat.
+        const sudahAdaBukuDariServer =
+            daftarBuku.querySelector('.book-card') !== null;
 
-        const loading = document.createElement('div');
-        loading.className = 'empty-state';
-        loading.textContent = 'Memuat koleksi buku...';
-
-        daftarBuku.appendChild(loading);
+        if (!sudahAdaBukuDariServer) {
+            const loading = document.createElement('div');
+            loading.className = 'empty-state';
+            loading.textContent = 'Memuat koleksi buku...';
+            daftarBuku.replaceChildren(loading);
+        }
 
         try {
             const response = await fetch(API_BUKU, {
@@ -427,18 +440,21 @@
             hapusPesan(listMessage);
 
         } catch (error) {
+            // Jangan kosongkan daftar yang sudah berhasil dirender oleh Blade.
+            const masihAdaBuku = daftarBuku.querySelector('.book-card') !== null;
 
-            daftarBuku.replaceChildren();
-
-            const gagal = document.createElement('div');
-            gagal.className = 'empty-state';
-            gagal.textContent = 'Data buku gagal dimuat.';
-
-            daftarBuku.appendChild(gagal);
+            if (!masihAdaBuku) {
+                const gagal = document.createElement('div');
+                gagal.className = 'empty-state';
+                gagal.textContent = 'Data buku belum dapat dimuat.';
+                daftarBuku.replaceChildren(gagal);
+            }
 
             tampilkanPesan(
                 listMessage,
-                error.message || 'API tidak dapat diakses.',
+                masihAdaBuku
+                    ? 'Pembaruan data dari API gagal. Data buku dari server tetap ditampilkan.'
+                    : (error.message || 'API tidak dapat diakses.'),
                 'error'
             );
         }
